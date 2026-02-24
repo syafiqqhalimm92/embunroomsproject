@@ -8,12 +8,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('houses', function (Blueprint $table) {
-            $table->string('property_type', 50)->nullable()->after('address'); // Jenis Kediaman
+            $table->string('property_type', 50)->nullable()->after('address');
+
             $table->string('owner_full_name')->nullable()->after('property_type');
             $table->string('owner_ic_no', 20)->nullable()->after('owner_full_name');
 
-            $table->string('bank_name')->nullable()->after('owner_ic_no');
-            $table->string('bank_account_no')->nullable()->after('bank_name');
+            $table->string('bank_name', 100)->nullable()->after('owner_ic_no');
+            $table->string('bank_account_no', 50)->nullable()->after('bank_name');
 
             $table->text('remarks')->nullable()->after('bank_account_no');
         });

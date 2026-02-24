@@ -12,4 +12,14 @@ class AgreementTemplate extends Model
         'content',
         'is_active',
     ];
+
+    public function getTypeLabelAttribute(): string
+    {
+        return match ($this->type) {
+            'to_owner' => 'To Owner',
+            'to_tenants' => 'To Tenants',
+            default => $this->type,
+        };
+    }
 }
+

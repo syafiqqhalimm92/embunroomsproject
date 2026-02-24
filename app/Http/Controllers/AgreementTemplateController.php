@@ -9,25 +9,36 @@ class AgreementTemplateController extends Controller
 {
     public function index()
     {
-        // Pastikan 2 rekod default wujud
-        AgreementTemplate::firstOrCreate(
-            ['type' => 'owner_to_business'],
-            ['title' => 'Template Tn Rumah', 'content' => '', 'is_active' => true]
-        );
-
-        AgreementTemplate::firstOrCreate(
-            ['type' => 'business_to_tenant'],
-            ['title' => 'Template Our Tenants', 'content' => '', 'is_active' => true]
-        );
-
-        $templates = AgreementTemplate::orderBy('id')->get();
-
+        $templates = AgreementTemplate::orderBy('id','desc')->get();
         return view('pages.agreement_template', compact('templates'));
     }
 
     public function edit(AgreementTemplate $template)
     {
         return view('pages.agreement_template_edit', compact('template'));
+    }
+
+    public function create()
+    {
+        return view('pages.agreement_template_create');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'type' => 'required|in:to_owner,to_tenants',
+            'title' => 'required|string|max:255',
+        ]);
+
+        $template = AgreementTemplate::create([
+            'type' => $data['type'],
+            'title' => $data['title'],
+            'content' => '',
+            'is_active' => true,
+        ]);
+
+        return redirect()->route('agreement.template.edit', $template->id)
+            ->with('success', 'Template created. Sila isi content.');
     }
 
     public function update(Request $request, AgreementTemplate $template)
@@ -43,5 +54,11 @@ class AgreementTemplateController extends Controller
         $template->update($data);
 
         return redirect()->route('agreement.template')->with('success', 'Template updated.');
+    }
+
+    public function destroy(AgreementTemplate $template)
+    {
+        $template->delete();
+        return redirect()->route('agreement.template')->with('success', 'Template deleted.');
     }
 }

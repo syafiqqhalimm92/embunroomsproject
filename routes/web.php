@@ -62,4 +62,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/agreement/template/{template}/edit', [AgreementTemplateController::class, 'edit'])->name('agreement.template.edit');
     Route::put('/agreement/template/{template}', [AgreementTemplateController::class, 'update'])->name('agreement.template.update');
 
+    Route::get('/agreement/template/create', [AgreementTemplateController::class, 'create'])->name('agreement.template.create');
+    Route::post('/agreement/template', [AgreementTemplateController::class, 'store'])->name('agreement.template.store');
+
+    Route::delete('/agreement/template/{template}', [AgreementTemplateController::class, 'destroy'])->name('agreement.template.destroy');
+
 });

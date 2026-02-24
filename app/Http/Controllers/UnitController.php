@@ -42,13 +42,21 @@ class UnitController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'room_type' => 'required|in:Single,Medium,Master,House',
-            'rent_price' => 'required|numeric|min:0',
-            'status' => 'required|in:available,occupied',
+            'property_type' => 'nullable|in:Terrace,Service Apartment,Flat,Condo,Shop Lot,Semi-D,Apartment,Bungalow,Others',
+            'owner_full_name' => 'nullable|string|max:255',
+            'owner_ic_no' => 'nullable|string|max:20',
+            'bank_name' => 'nullable|string|max:100',
+            'bank_account_no' => 'nullable|string|max:50',
+            'remarks' => 'nullable|string',
+
+            'address' => 'required|string',
+            'state' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'room_count' => 'nullable|integer|min:0',
+            'house_rent_price' => 'nullable|numeric|min:0',
         ]);
 
-        $house = House::create($data);
+        House::create($data);
 
         return redirect()->route('units.index')->with('success','House created.');
     }
@@ -76,10 +84,18 @@ class UnitController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'room_type' => 'nullable|string|max:255',
-            'rent_price' => 'required|numeric|min:0',
-            'status' => 'required|in:available,occupied',
+            'address' => 'required|string',
+            'property_type' => 'nullable|in:Terrace,Service Apartment,Flat,Condo,Shop Lot,Semi-D,Apartment,Bungalow,Others',
+            'state' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'room_count' => 'nullable|integer|min:0',
+            'house_rent_price' => 'nullable|numeric|min:0',
+
+            'owner_full_name' => 'nullable|string|max:255',
+            'owner_ic_no' => 'nullable|string|max:20',
+            'bank_name' => 'nullable|string|max:100',
+            'bank_account_no' => 'nullable|string|max:50',
+            'remarks' => 'nullable|string',
         ]);
 
         $house->rooms()->create($data);
@@ -89,10 +105,7 @@ class UnitController extends Controller
 
     public function edit(House $house)
     {
-        $house->load(['rooms' => function($q){
-            $q->orderBy('id','desc');
-        }]);
-
+        $house->load('rooms'); // untuk rooms list
         return view('pages.units_edit', compact('house'));
     }
 
@@ -100,10 +113,17 @@ class UnitController extends Controller
     {
         $data = $request->validate([
             'address' => 'required|string',
+            'property_type' => 'nullable|in:Terrace,Service Apartment,Flat,Condo,Shop Lot,Semi-D,Apartment,Bungalow,Others',
             'state' => 'required|string|max:100',
             'city' => 'required|string|max:100',
             'room_count' => 'nullable|integer|min:0',
-            'house_rent_price' => 'nullable|numeric',
+            'house_rent_price' => 'nullable|numeric|min:0',
+
+            'owner_full_name' => 'nullable|string|max:255',
+            'owner_ic_no' => 'nullable|string|max:20',
+            'bank_name' => 'nullable|string|max:100',
+            'bank_account_no' => 'nullable|string|max:50',
+            'remarks' => 'nullable|string',
         ]);
 
         $house->update($data);

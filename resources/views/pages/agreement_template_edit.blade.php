@@ -10,14 +10,7 @@
     </div>
 
     <div style="padding:10px;border:1px solid #ddd;margin-bottom:12px;">
-        <strong>Type:</strong>
-        @if($template->type === 'owner_to_business')
-            Tn Rumah (Owner → Business)
-        @elseif($template->type === 'business_to_tenant')
-            Our Tenants (Business → Tenant)
-        @else
-            {{ $template->type }}
-        @endif
+        <strong>Type:</strong> {{ $template->type_label }}
     </div>
 
     @if ($errors->any())
