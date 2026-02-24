@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorUserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\AgreementTemplateController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -56,4 +57,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/houses/{house}/rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::put('/houses/{house}/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
+
+    Route::get('/agreement/template', [AgreementTemplateController::class, 'index'])->name('agreement.template');
+    Route::get('/agreement/template/{template}/edit', [AgreementTemplateController::class, 'edit'])->name('agreement.template.edit');
+    Route::put('/agreement/template/{template}', [AgreementTemplateController::class, 'update'])->name('agreement.template.update');
+
 });

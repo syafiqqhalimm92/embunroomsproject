@@ -73,15 +73,15 @@
     <a href="{{ route('notifications') }}"><button class="nav-btn">Notification</button></a>
     <a href="{{ route('tasks') }}"><button class="nav-btn">Task</button></a>
 
-    @if(in_array(auth()->user()->role, ['superadmin', 'admin']))
+    @if(auth()->check() && in_array(auth()->user()->role, ['superadmin', 'admin']))
         <a href="{{ route('admin.index') }}"><button class="nav-btn">Admin</button></a>
     @endif
 
-    @if(in_array(auth()->user()->role, ['superadmin', 'admin', 'vendor']))
+    @if(auth()->check() && in_array(auth()->user()->role, ['superadmin', 'admin', 'vendor']))
         <a href="{{ route('vendor.index') }}"><button class="nav-btn">Vendor</button></a>
     @endif
 
-    @if(in_array(auth()->user()->role, ['superadmin', 'admin', 'tenant']))
+    @if(auth()->check() && in_array(auth()->user()->role, ['superadmin', 'admin', 'tenant']))
         <a href="{{ route('tenant') }}"><button class="nav-btn">Tenant</button></a>
     @endif
 
@@ -93,12 +93,21 @@
         </div>
     </details>
 
+    <details>
+        <summary>Agreement ▾</summary>
+        <div class="dropdown">
+            <a href="{{ route('agreement.template') }}">Agreement Template</a>
+        </div>
+    </details>
+
     <a href="{{ route('chat') }}"><button class="nav-btn">Chat</button></a>
 
     <div class="spacer"></div>
 
     <div>
-        <small>{{ auth()->user()->name }} ({{ auth()->user()->role }})</small>
+        @if(auth()->check())
+            <small>{{ auth()->user()->name }} ({{ auth()->user()->role }})</small>
+        @endif
 
         <form method="POST" action="/logout" style="display:inline;">
             @csrf
