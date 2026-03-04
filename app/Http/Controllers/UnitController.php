@@ -54,11 +54,18 @@ class UnitController extends Controller
             'city' => 'required|string|max:100',
             'room_count' => 'nullable|integer|min:0',
             'house_rent_price' => 'nullable|numeric|min:0',
+
+            'is_active' => 'nullable|boolean',
         ]);
+
+        // ✅ set default status
+        $data['is_active'] = $request->has('is_active');
 
         House::create($data);
 
-        return redirect()->route('units.index')->with('success','House created.');
+        return redirect()
+            ->route('units.index')
+            ->with('success', 'House created.');
     }
 
     // room creation example
@@ -124,8 +131,10 @@ class UnitController extends Controller
             'bank_name' => 'nullable|string|max:100',
             'bank_account_no' => 'nullable|string|max:50',
             'remarks' => 'nullable|string',
+            'is_active' => 'nullable|boolean',
         ]);
 
+        $data['is_active'] = (bool) $request->input('is_active', 1);
         $house->update($data);
 
         return redirect()->route('units.index')->with('success', 'House updated.');

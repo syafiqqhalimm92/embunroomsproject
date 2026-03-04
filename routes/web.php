@@ -52,19 +52,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/units/{house}', [UnitController::class, 'update'])->name('units.update');
 
     // Rooms management (under a house)
-    Route::get('/houses/{house}/rooms/create', [UnitController::class,'createRoom'])->name('rooms.create');
-    Route::post('/houses/{house}/rooms', [UnitController::class,'storeRoom'])->name('rooms.store');
-
+    Route::get('/houses/{house}/rooms/create', [RoomController::class,'create'])->name('rooms.create');
+    Route::post('/houses/{house}/rooms', [RoomController::class,'store'])->name('rooms.store');
     Route::get('/houses/{house}/rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::put('/houses/{house}/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
+    Route::delete('/houses/{house}/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
 
+    // Agreement templates management
     Route::get('/agreement/template', [AgreementTemplateController::class, 'index'])->name('agreement.template');
     Route::get('/agreement/template/{template}/edit', [AgreementTemplateController::class, 'edit'])->name('agreement.template.edit');
     Route::put('/agreement/template/{template}', [AgreementTemplateController::class, 'update'])->name('agreement.template.update');
-
     Route::get('/agreement/template/create', [AgreementTemplateController::class, 'create'])->name('agreement.template.create');
     Route::post('/agreement/template', [AgreementTemplateController::class, 'store'])->name('agreement.template.store');
-
     Route::delete('/agreement/template/{template}', [AgreementTemplateController::class, 'destroy'])->name('agreement.template.destroy');
+    Route::get('/agreement/template/{template}/preview', [AgreementTemplateController::class, 'preview'])->name('agreement.template.preview');
 
 });

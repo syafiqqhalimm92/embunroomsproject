@@ -35,7 +35,7 @@
         </div>
     @endif
 
-    @if($canCreate)
+    @if($remaining > 0)
         <form method="POST" action="{{ route('rooms.store', $house->id) }}">
             @csrf
 

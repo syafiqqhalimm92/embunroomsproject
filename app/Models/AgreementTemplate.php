@@ -11,6 +11,8 @@ class AgreementTemplate extends Model
         'title',
         'content',
         'is_active',
+        'owner_signature_path',
+        'owner_signature_updated_at',
     ];
 
     public function getTypeLabelAttribute(): string

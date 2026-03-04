@@ -119,6 +119,5 @@
 <div class="page">
     @yield('content')
 </div>
-
 </body>
 </html>

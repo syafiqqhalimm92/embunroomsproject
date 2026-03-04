@@ -9,17 +9,21 @@ class House extends Model
 {
     protected $fillable = [
         'address',
-        'property_type',       // NEW
+        'property_type',
         'state',
         'city',
         'room_count',
         'house_rent_price',
+        'owner_full_name',
+        'owner_ic_no',
+        'bank_name',
+        'bank_account_no',
+        'remarks',
+        'is_active',
+    ];
 
-        'owner_full_name',     // NEW
-        'owner_ic_no',         // NEW
-        'bank_name',           // NEW
-        'bank_account_no',     // NEW
-        'remarks',             // NEW
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function rooms()

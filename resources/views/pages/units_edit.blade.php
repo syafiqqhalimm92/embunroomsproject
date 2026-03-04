@@ -32,6 +32,16 @@
 
         <table cellpadding="8" cellspacing="0">
             <tr>
+                <td><strong>Status</strong></td>
+                <td>
+                    <select name="is_active">
+                        <option value="1" @selected(old('is_active', (int)$house->is_active) === 1)>Aktif</option>
+                        <option value="0" @selected(old('is_active', (int)$house->is_active) === 0)>Tak Aktif</option>
+                    </select>
+                </td>
+            </tr>
+        
+            <tr>
                 <td style="width:220px;"><strong>Jenis Kediaman</strong></td>
                 <td>
                     <select name="property_type" style="width:320px;">
@@ -193,6 +203,14 @@
 
                         <td>
                             <button type="submit">Update</button>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ route('rooms.destroy', [$house->id, $room->id]) }}"
+                                    onsubmit="return confirm('Delete room {{ $room->name }}?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Delete</button>
+                            </form>
                         </td>
                     </form>
                 </tr>

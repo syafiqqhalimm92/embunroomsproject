@@ -28,6 +28,7 @@
                 <th>Title</th>
                 <th style="width:120px;">Active</th>
                 <th style="width:140px;">Action</th>
+                <th>Preview</th>
                 <th style="width:120px;">Delete</th>
             </tr>
         </thead>
@@ -41,6 +42,11 @@
                     <td>
                         <a href="{{ route('agreement.template.edit', $t->id) }}">
                             <button type="button">Edit</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ route('agreement.template.preview', $t->id) }}" target="_blank">
+                            <button type="button">Preview</button>
                         </a>
                     </td>
                     <td>

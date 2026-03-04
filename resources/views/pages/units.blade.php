@@ -35,6 +35,7 @@
                 <th>House Rent (RM)</th>
                 <th>Current Rental Income</th>
                 <th>Potential Rental Income</th>
+                <th>Status</th>
                 <th>Agreement Start</th>
                 <th>Agreement End</th>
                 <th>Actions</th>
@@ -55,6 +56,7 @@
                 <td style="text-align:right">
                     {{ number_format($house->potential_rental_income ?? 0, 2) }}
                 </td>
+                <td>{{ $house->is_active ? 'Aktif' : 'Tak Aktif' }}</td>
                 <td>
                     @if($house->latestOwnerAgreement)
                         {{ $house->latestOwnerAgreement->start_date->format('Y-m-d') }}

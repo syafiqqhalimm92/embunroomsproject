@@ -24,7 +24,8 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('agreement.template.update', $template->id) }}">
+    {{-- ✅ IMPORTANT: Keep everything inside ONE form --}}
+    <form id="templateForm" method="POST" action="{{ route('agreement.template.update', $template->id) }}">
         @csrf
         @method('PUT')
 
@@ -35,6 +36,56 @@
 
         <div style="margin-bottom:10px;">
             <label><strong>Agreement Content</strong></label><br>
+            {{-- Placeholder Panel --}}
+            <div style="border:1px solid #ddd; padding:10px; margin:10px 0; background:#fafafa;">
+                <strong>Available Placeholders</strong>
+                <div style="color:#666; font-size:12px; margin-top:4px;">
+                    Klik placeholder untuk copy. Lepas tu paste dalam content template.
+                </div>
+
+                @php
+                    $placeholders = [
+                        '{{tarikh_perjanjian}}'      => 'Tarikh perjanjian',
+                        '{{tuan_rumah_nama}}'        => 'Nama tuan rumah',
+                        '{{tuan_rumah_ic}}'          => 'No IC tuan rumah',
+                        '{{tuan_rumah_telefon}}'     => 'Telefon tuan rumah',
+
+                        '{{bank_akaun_no}}'          => 'No akaun bank',
+                        '{{bank_nama}}'              => 'Nama bank',
+
+                        '{{alamat_premis}}'          => 'Alamat premis',
+
+                        '{{tempoh_sewaan}}'          => 'Tempoh sewaan (cth: 12 bulan)',
+                        '{{tarikh_mula}}'            => 'Tarikh mula sewa',
+                        '{{tarikh_tamat}}'           => 'Tarikh tamat sewa',
+
+                        '{{sewa_bulanan}}'           => 'Sewa bulanan',
+                        '{{deposit_sekuriti}}'       => 'Deposit sekuriti',
+                        '{{deposit_utiliti}}'        => 'Deposit utiliti',
+
+                        '{{tandatangan_tnrumah}}'    => 'Signature tuan rumah (template signature)',
+                        '{{senarai_inventori}}'      => 'Senarai inventori',
+                        '{{inventori_ulasan_lain}}'  => 'Ulasan inventori',
+                        '{{emergency_contact}}'      => 'Emergency contact',
+                    ];
+                @endphp
+
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                    @foreach($placeholders as $ph => $label)
+                        <button type="button"
+                                class="ph-btn"
+                                data-ph="{{ $ph }}"
+                                title="{{ $label }}"
+                                style="padding:6px 10px; border:1px solid #ccc; background:#fff; cursor:pointer;">
+                            {{ $ph }}
+                        </button>
+                    @endforeach
+                </div>
+
+                <div id="phCopiedMsg" style="display:none; margin-top:10px; color:green; font-size:12px;">
+                    Copied!
+                </div>
+            </div>
             <textarea id="contentEditor" name="content" rows="18" style="width:100%;">{{ old('content', $template->content) }}</textarea>
             <small style="color:#666;">Tip: boleh guna bold, table, bullet, dan lain-lain.</small>
         </div>
@@ -46,7 +97,38 @@
             </label>
         </div>
 
-        <button type="submit">Save Template</button>
+        <hr>
+
+        <h3>Owner Signature (E-Signature)</h3>
+
+        @if($template->owner_signature_path)
+            <div style="margin-bottom:10px;">
+                <div>Current signature:</div>
+                <img
+                    src="{{ asset('storage/'.$template->owner_signature_path) }}"
+                    style="max-width:300px; border:1px solid #ccc; padding:8px;"
+                    alt="Owner signature"
+                >
+                <div style="margin-top:8px;">
+                    <label>
+                        <input type="checkbox" name="remove_owner_signature" value="1">
+                        Remove current signature
+                    </label>
+                </div>
+            </div>
+        @endif
+
+        <canvas id="sigPad" width="420" height="180" style="border:1px solid #333; background:#fff;"></canvas>
+        <br>
+        <button type="button" id="sigClear">Clear</button>
+
+        {{-- ✅ This will be filled before submit --}}
+        <input type="hidden" name="owner_signature_data" id="owner_signature_data">
+
+        <div style="margin-top:18px;">
+            {{-- ✅ Save button now placed BELOW signature --}}
+            <button type="submit">Save Template</button>
+        </div>
     </form>
 
     {{-- TinyMCE --}}
@@ -60,4 +142,75 @@
             toolbar: 'undo redo | bold italic underline | bullist numlist | link table | code',
         });
     </script>
+
+    {{-- Signature Pad (vanilla) --}}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('sigPad');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    function pos(e){
+        const rect = canvas.getBoundingClientRect();
+        const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+        const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function start(e){
+        drawing = true;
+        const p = pos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+    }
+
+    function move(e){
+        if (!drawing) return;
+        e.preventDefault();
+        const p = pos(e);
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+    }
+
+    function end(){ drawing = false; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+
+    canvas.addEventListener('touchstart', start, { passive:false });
+    canvas.addEventListener('touchmove', move, { passive:false });
+    window.addEventListener('touchend', end);
+
+    // Clear button
+    const clearBtn = document.getElementById('sigClear');
+    clearBtn?.addEventListener('click', function(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+    });
+
+    // blank detection
+    function isBlank(c){
+        const px = new Uint32Array(c.getContext('2d').getImageData(0,0,c.width,c.height).data.buffer);
+        return !px.some(v => v !== 0);
+    }
+
+    // Before submit
+    const form = document.getElementById('templateForm');
+    form?.addEventListener('submit', function(){
+        const hidden = document.getElementById('owner_signature_data');
+        if (!hidden) return;
+
+        if (isBlank(canvas)) {
+        hidden.value = '';
+        return;
+        }
+        hidden.value = canvas.toDataURL('image/png');
+    });
+    });
+    </script>
+            
 @endsection
