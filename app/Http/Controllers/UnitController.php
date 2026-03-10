@@ -12,7 +12,6 @@ class UnitController extends Controller
         $q = trim((string)$request->get('q',''));
 
         $houses = House::query()
-        ->with(['latestOwnerAgreement'])
         ->withCount([
             'rooms as available_rooms_count' => function ($q) {
                 $q->where('status', 'available');

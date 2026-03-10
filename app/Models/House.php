@@ -31,23 +31,11 @@ class House extends Model
         return $this->hasMany(Room::class);
     }
 
-    // polymorphic agreements
-    public function agreements()
-    {
-        return $this->morphMany(Agreement::class, 'agreeable');
-    }
-
-    // latest owner agreement (owner_to_business)
-    public function latestOwnerAgreement()
-    {
-        return $this->morphOne(Agreement::class, 'agreeable')
-            ->where('agreement_type', 'owner_to_business')
-            ->latestOfMany('start_date');
-    }
-
     // images
-    public function images(): MorphMany
+    public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->hasMany(HouseImage::class)->orderBy('sort_order');
     }
+
+    
 }

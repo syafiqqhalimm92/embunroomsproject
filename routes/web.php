@@ -7,6 +7,8 @@ use App\Http\Controllers\VendorUserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AgreementTemplateController;
+use App\Http\Controllers\HouseImageController;
+use App\Http\Controllers\RoomImageController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -50,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/units', [UnitController::class, 'store'])->name('units.store');
     Route::get('/units/{house}/edit', [UnitController::class, 'edit'])->name('units.edit');
     Route::put('/units/{house}', [UnitController::class, 'update'])->name('units.update');
+    Route::post('/houses/{house}/rooms/{room}/images', [RoomImageController::class, 'store'])->name('rooms.images.store');
+    Route::delete('/houses/{house}/rooms/{room}/images/{image}', [RoomImageController::class, 'destroy'])->name('rooms.images.destroy');
 
     // Rooms management (under a house)
     Route::get('/houses/{house}/rooms/create', [RoomController::class,'create'])->name('rooms.create');
@@ -57,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/houses/{house}/rooms/{room}/edit', [RoomController::class, 'edit'])->name('rooms.edit');
     Route::put('/houses/{house}/rooms/{room}', [RoomController::class, 'update'])->name('rooms.update');
     Route::delete('/houses/{house}/rooms/{room}', [RoomController::class, 'destroy'])->name('rooms.destroy');
+    Route::post('/houses/{house}/images', [HouseImageController::class, 'store'])->name('houses.images.store');
+    Route::delete('/houses/{house}/images/{image}', [HouseImageController::class, 'destroy'])->name('houses.images.destroy');
 
     // Agreement templates management
     Route::get('/agreement/template', [AgreementTemplateController::class, 'index'])->name('agreement.template');

@@ -29,6 +29,6 @@ class Room extends Model
 
     public function images()
     {
-        return $this->morphMany(Image::class, 'imageable');
+        return $this->hasMany(RoomImage::class)->orderBy('sort_order');
     }
 }

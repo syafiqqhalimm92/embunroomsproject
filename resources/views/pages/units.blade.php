@@ -36,8 +36,6 @@
                 <th>Current Rental Income</th>
                 <th>Potential Rental Income</th>
                 <th>Status</th>
-                <th>Agreement Start</th>
-                <th>Agreement End</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -58,26 +56,12 @@
                 </td>
                 <td>{{ $house->is_active ? 'Aktif' : 'Tak Aktif' }}</td>
                 <td>
-                    @if($house->latestOwnerAgreement)
-                        {{ $house->latestOwnerAgreement->start_date->format('Y-m-d') }}
-                    @else
-                        -
-                    @endif
-                </td>
-                <td>
-                    @if($house->latestOwnerAgreement)
-                        {{ $house->latestOwnerAgreement->end_date->format('Y-m-d') }}
-                    @else
-                        -
-                    @endif
-                </td>
-                <td>
                     <a href="{{ route('units.edit', $house->id) }}"><button>Edit</button></a>
                     <a href="{{ route('rooms.create', $house->id) }}"><button>Create Room</button></a>
                 </td>
             </tr>
         @empty
-            <tr><td colspan="11">Tiada rumah ditemui.</td></tr>
+            <tr><td colspan="9">Tiada rumah ditemui.</td></tr>
         @endforelse
         </tbody>
     </table>
