@@ -194,6 +194,103 @@
     <hr style="margin:18px 0;">
 
     {{-- =========================
+    OWNER AGREEMENTS
+    ========================== --}}
+    <div style="display:flex;align-items:center;">
+        <h3 style="margin:0;">Owner Agreements</h3>
+
+        <div style="margin-left:auto;">
+            <a href="{{ route('owner-agreements.create', $house->id) }}">
+                <button type="button">+ Create Agreement</button>
+            </a>
+        </div>
+    </div>
+
+    <table border="1" cellpadding="8" cellspacing="0"
+        style="width:100%;border-collapse:collapse;margin-top:10px;">
+
+        <thead>
+            <tr>
+                <th style="width:60px;">No</th>
+                <th>Agreement Period</th>
+                <th style="width:140px;">Rent (RM)</th>
+                <th style="width:140px;">Deposit</th>
+                <th style="width:160px;">Template</th>
+                <th style="width:140px;">Status</th>
+                <th style="width:180px;">Owner Signed</th>
+                <th style="width:180px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($house->ownerAgreements as $i => $agreement)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+
+                    <td>
+                        {{ optional($agreement->start_date)->format('d/m/Y') ?? '-' }}
+                        -
+                        {{ optional($agreement->end_date)->format('d/m/Y') ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ number_format((float)($agreement->rent_price ?? 0), 2) }}
+                    </td>
+
+                    <td>
+                        {{ number_format((float)($agreement->deposit_amount ?? 0), 2) }}
+                    </td>
+
+                    <td>
+                        {{ $agreement->template->title ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $agreement->status ?? 'Draft' }}
+                    </td>
+
+                    <td>
+                        {{ !empty($agreement->owner_signed_at) ? optional($agreement->owner_signed_at)->format('d/m/Y') : '-' }}
+                    </td>
+
+                    <td>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <a href="{{ route('owner-agreements.edit', ['house' => $house->id, 'ownerAgreement' => $agreement->id]) }}">
+                                <button type="button">Modify</button>
+                            </a>
+
+                            <a href="{{ route('owner-agreements.preview', ['house' => $house->id, 'ownerAgreement' => $agreement->id]) }}"
+                            target="_blank">
+                                <button type="button">Preview</button>
+                            </a>
+                            @if(!empty($agreement->sign_token))
+                                <a href="{{ route('owner-agreements.sign-page', ['token' => $agreement->sign_token]) }}" target="_blank">
+                                    <button type="button">Share Link</button>
+                                </a>
+                            @else
+                                <button type="button" disabled>No Link</button>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="8" style="text-align:center;color:#666;">
+                        No agreement created yet.
+                        <br><br>
+
+                        <a href="{{ route('owner-agreements.create', $house->id) }}">
+                            <button type="button">Create First Agreement</button>
+                        </a>
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <hr style="margin:18px 0;">
+
+    {{-- =========================
         ROOMS LIST
     ========================== --}}
     <div style="display:flex;align-items:center;">

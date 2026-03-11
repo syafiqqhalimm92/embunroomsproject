@@ -37,5 +37,8 @@ class House extends Model
         return $this->hasMany(HouseImage::class)->orderBy('sort_order');
     }
 
-    
+    public function ownerAgreements()
+    {
+        return $this->hasMany(OwnerAgreement::class);
+    }    
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\AgreementTemplateController;
 use App\Http\Controllers\HouseImageController;
 use App\Http\Controllers\RoomImageController;
+use App\Http\Controllers\OwnerAgreementController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -72,5 +73,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/agreement/template', [AgreementTemplateController::class, 'store'])->name('agreement.template.store');
     Route::delete('/agreement/template/{template}', [AgreementTemplateController::class, 'destroy'])->name('agreement.template.destroy');
     Route::get('/agreement/template/{template}/preview', [AgreementTemplateController::class, 'preview'])->name('agreement.template.preview');
+
+    // Owner Agreements
+    Route::get('/houses/{house}/owner-agreements/create', [OwnerAgreementController::class, 'create'])->name('owner-agreements.create');
+    Route::post('/houses/{house}/owner-agreements', [OwnerAgreementController::class, 'store'])->name('owner-agreements.store');
+    Route::get('/houses/{house}/owner-agreements/{ownerAgreement}/edit', [OwnerAgreementController::class, 'edit'])->name('owner-agreements.edit');
+    Route::put('/houses/{house}/owner-agreements/{ownerAgreement}', [OwnerAgreementController::class, 'update'])->name('owner-agreements.update');
+    Route::get('/houses/{house}/owner-agreements/{ownerAgreement}/preview', [OwnerAgreementController::class, 'preview'])->name('owner-agreements.preview');
+    Route::post('/houses/{house}/owner-agreements/{ownerAgreement}/owner-signature', [OwnerAgreementController::class, 'saveOwnerSignature'])->name('owner-agreements.owner-signature.store');
+    Route::get('/owner-agreements/sign/{token}', [OwnerAgreementController::class, 'signPage'])->name('owner-agreements.sign-page');
+    Route::post('/owner-agreements/sign/{token}', [OwnerAgreementController::class, 'submitSignature'])->name('owner-agreements.sign-submit');
 
 });

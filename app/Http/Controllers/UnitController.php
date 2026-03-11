@@ -109,9 +109,21 @@ class UnitController extends Controller
         return redirect()->route('units.index')->with('success','Room created.');
     }
 
+    /*
     public function edit(House $house)
     {
         $house->load('rooms'); // untuk rooms list
+        return view('pages.units_edit', compact('house'));
+    }
+    */
+    public function edit($id)
+    {
+        $house = \App\Models\House::with([
+            'images',
+            'rooms.images',
+            'ownerAgreements'
+        ])->findOrFail($id);
+
         return view('pages.units_edit', compact('house'));
     }
 
